@@ -1,5 +1,6 @@
 "use client"
 
+import { useAppContext } from "@/context/context";
 import {
     ImageKitAbortError,
     ImageKitInvalidRequestError,
@@ -10,6 +11,8 @@ import {
 import { useRef, useState } from "react";
 
 const ImageUploader = () => {
+    const {setUploadedImageUrl} = useAppContext()
+
     const [progress, setProgress] = useState(0);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -94,6 +97,9 @@ const ImageUploader = () => {
                 // Abort signal to allow cancellation of the upload if needed.
                 abortSignal: abortController.signal,
             });
+            if(uploadResponse.url){
+                setUploadedImageUrl(uploadResponse.url)
+            }
             console.log("Upload response:", uploadResponse);
         } catch (error) {
             // Handle specific error types provided by the ImageKit SDK.
