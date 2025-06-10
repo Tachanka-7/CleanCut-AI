@@ -8,12 +8,13 @@ import {
     ImageKitUploadNetworkError,
     upload,
 } from "@imagekit/next";
+import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import { useRef, useState } from "react";
 
 const ImageUploader = () => {
     const {setUploadedImageUrl} = useAppContext()
-
     const [progress, setProgress] = useState(0);
+    const [uploadStatus,setUploadStatus] = useState<"idle" | "uploading" | "success" | "error">("idle")
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -118,14 +119,70 @@ const ImageUploader = () => {
         }
     };
 
+    const resetUpload = () => {
+        setUploadStatus("idle")
+        setProgress(0)
+    }
+
     return (
-        <div className="flex flex-col items-center">            
-            <input type="file" ref={fileInputRef} />
-            <button type="button" onClick={handleUpload} className="bg-blue-500 hover:bg-blue-600 text-white w-1/2 rounded">
+        <div className="flex flex-col items-center justify-center w-full gap-5">            
+            <div>
+                <h1 className="mb-2 text-sm text-gray-500">Click to Upload a File</h1>
+            </div>
+            <div className="bg-blue-500 hover:bg-blue-600 text-white w-1/2 rounded-sm text-center">
+                <input type="file" accept="image/*" ref={fileInputRef} className="ml-7"/>
+            </div>
+            <button type="button" onClick={handleUpload} className="bg-gray-200 text-black hover:bg-blue-600 hover:text-white w-1/2 rounded-full">
                 Upload file
             </button>
             <br />
-            Upload progress: <progress value={progress} max={100}></progress>
+            { 
+                uploadStatus === "uploading" && (
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-center">
+                            <Loader2 className="animate-spin text-blue-500 h-5 w-5 mr-3"/>
+                            <span>Uploading File....</span>
+                        </div>
+                        <div className="w-full h-2.5 rounded-full bg-gray-200">
+                            <div style={{ width: `${progress}%` }} className="bg-blue-600 h-2.5 rounded-full"></div>
+                        </div>
+                    </div>
+                )
+            }
+            {
+                uploadStatus === "success" && (
+                    <div className="text-center">
+                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-300 ">
+                            <CheckCircle className="text-green-500 h-5 w-5"/>
+                        </div>
+                        <p>Upload Successful</p>
+                        <button 
+                        onClick={resetUpload}
+                        className="mt-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                        >
+                            Upload Another File
+                        </button>
+                    </div>
+                )
+            }
+            {
+                uploadStatus === "error" && (
+                    <div className="text-center">
+                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-100">
+                            <XCircle className="text-red-500 h-5 w-5"/>
+                        </div>
+                        <p>Upload Failed</p>
+                        <p>Try Again</p>
+                        <button 
+                        onClick={resetUpload}
+                        className="mt-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                        >
+                            Try Again
+                        </button>
+                    </div>
+                )
+            }
+
         </div>
     );
 };

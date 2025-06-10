@@ -10,11 +10,11 @@ export default function ImageDisplay(){
     const {uploadedImageUrl} = useAppContext()
 
     return <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center">
                 <ImageUploader />
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <h1>Original Image</h1>
+                <h1 className="text-xl">Original Image</h1>
                 <div className="aspect-video bg-gray-100 rounded-md overflow-hidden">
                     {
                         uploadedImageUrl ? 
@@ -24,7 +24,7 @@ export default function ImageDisplay(){
                         alt="Original Image"
                         width={500}
                         height={400}
-                        transformation={[{ width: 500, height: 500 }]}
+                        // transformation={[{ width: 500, height: 500 }]}
                         className="w-full h-full object-contain"/>
                         : (
                             <div className="flex items-center justify-center h-full">
